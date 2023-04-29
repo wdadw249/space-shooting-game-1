@@ -1,0 +1,109 @@
+var backgroundImage, bg;
+var waiting_screen;
+var gameState = 0;
+var playButton;
+var player, playerImage;
+var enemy, enemyImage, enemyBullet, enemyBulletImage;
+var meteoroid, meteoroidImage;
+var boss, bossImage, bossBullet, bossBulletImage;
+var bulletImage, bulletGroup;
+var playerMoving = false;
+var edges;
+
+function preload() {
+  playerImage = loadImage("./assets/spaceShip.png")
+  backgroundImage = loadImage("./assets/background.png");
+  bulletImage = loadImage("./assets/bullet.png")
+
+  waiting_screen = loadImage("./assets/backgroundwaiting.png");
+
+  enemyImage = loadImage("./assets/es3.png");
+  enemyBulletImage = loadImage("./assets/es3bullet.png");
+  meteoroidImage = loadImage("./assets/meteoroids.png");
+
+  bossImage = loadImage("./assets/boss.png");
+  bossBulletImage = loadImage("./assets/bossb.png");
+  
+  
+}
+
+//BP
+function setup() {
+  canvas = createCanvas(windowWidth,windowHeight);
+
+  
+
+  bg = createSprite(width/2 + 405 ,height/2,width,2);
+  bg.addImage(backgroundImage);
+  bg.scale = 2.42
+  bg.visible = false;
+    
+  playButton = createButton("start");
+  playButton.position(width/2-100, height/2);
+  playButton.class("customButton");
+
+  player = createSprite(width/2 - 300,height/2,40,40);
+  player.addImage(playerImage);
+  player.scale = .5;
+  player.visible = false;
+
+    
+
+  bulletGroup = new Group()
+ 
+}
+
+//BP
+function draw() {
+ background(waiting_screen);
+ edges = createEdgeSprite();
+    if(gameState === 0){
+        
+        playButton.mousePressed(()=>{
+            gameState = 1;
+            playButton.hide();
+        });
+    }
+    
+    
+    if(gameState === 1){
+      bg.visible = true;
+      player.visible = true;
+      playerMoving = true;
+      playerMovement();
+        if(keyWentDown("space")){
+            bullet();
+        }
+      
+    }
+
+  drawSprites();
+}
+
+
+
+
+function bullet(){
+    var bullet = createSprite(player.position.x + 50,player.position.y, 20, 20);
+    bullet.addImage("bullet",bulletImage);
+    bullet.scale = .1;
+    bullet.velocity.x = 20
+
+    
+    
+    bulletGroup.add(bullet);
+}
+function playerMovement(){
+if (keyDown("UP_ARROW")){
+  player.position.y -= 3
+}
+if (keyDown("DOWN_ARROW")){
+  player.position.y +=3
+}
+if (playerMoving){
+  player.position.x +=3
+}
+player.bounce(topEdge);
+player.bounce(bottomEdge);
+}
+
